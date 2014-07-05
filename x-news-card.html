@@ -1,0 +1,40 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/core-icon/core-icon.html">
+<link rel="import" href="x-news.html">
+
+<polymer-element name="x-news-card">
+
+  <template>
+    <style>    
+      :host {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+      * { margin: 5px;}
+    </style>
+    <!--Get news stories..-->
+    <core-ajax></core-ajax>
+    <core-card layout horizontal center>
+      <paper-button label="<<"></paper-button>
+      <core-card>
+        <x-news title="Prez says school uncool" author="johnnie McBlue"></x-news>
+      </core-card>
+      <paper-button label=">>"></paper-button>
+      
+    </core-card>
+  </template>
+
+  <script>
+
+    Polymer('x-news-card', {
+      
+    });
+
+  </script>
+
+</polymer-element>
