@@ -1,0 +1,14 @@
+{
+  "name": "test",
+  "description": "",
+  "homepage": "",
+  "keywords": [
+  ],
+  "author": "datawhore",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer",
+    "core-elements": "Polymer/core-elements",
+    "paper" : "Polymer/paper-elements"
+  }
+}
