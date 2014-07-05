@@ -1,0 +1,163 @@
+  <link rel="import" href="bower_components/paper-progress/paper-progress.html">
+  <link rel="import" href="bower_components/paper-button/paper-button.html">
+  <link rel="import" href="bower_components/paper-toggle-button/paper-toggle-button.html">
+  
+  <polymer-element name="x-news" attribute="artTitle author word words index">
+  
+    <template>
+      <style>    
+        :host {
+          /*position: relative;*/
+          width: 100%;
+          height: 100%;
+          box-sizing: border-box;
+        }
+        #core_card {
+          position: relative;
+          width: 450px;
+          height: 300px;
+          border-top-left-radius: 2px;
+          border-top-right-radius: 2px;
+          border-bottom-right-radius: 2px;
+          border-bottom-left-radius: 2px;
+          box-shadow: rgba(0, 0, 0, 0.0980392) 0px 2px 4px, rgba(0, 0, 0, 0.0980392) 0px 0px 3px;
+          /*left: 0px;*/
+          /*top: 0px;*/
+          background-color: rgb(255, 255, 255);
+        }
+        #newsWord {
+          margin: 30px 0px;
+        }
+        #wordContainer {
+          width: 300px;
+          height: 80px ;
+          background-color: #99FF66;
+        }
+        #newsAuthor {
+          font-style: italic;
+        }
+        #newsTitle{
+          margin-bottom: 3px;
+        }
+        #newsControls {
+          bottom: 0px;
+          margin: 10px 3px 10px 3px;
+        }
+        #articleProgress {
+          margin: 25px 0px;
+        }
+        #ptbRepeat { margin-left: 5px; }
+        paper-button { margin: 1px 5px; width: 80px; height: 40px; }
+        paper-toggle-button { margin: 10px 0px 10px 0px; }
+        #btnPlay {background-color:#4C8033;}
+        #btnFaster {background-color:#FF6666;}
+        #btnSlower {background-color:#8080FF;}
+      </style>
+      <core-card id="core_card" layout vertical center>
+      <paper-shadow z="3"></paper-shadow>
+        <h1 id="newsTitle">{{ artTitle }}</h1>
+        <h5 id="newsAuthor">by: {{ author }}</h5>
+        <paper-shadow z="3"></paper-shadow>
+        <core-card id="wordContainer" horizontal layout center center-justified>
+          <paper-shadow z="5"></paper-shadow>
+          <p id="newsWord">{{ word }}</p>
+        </core-card>
+        
+        <div id="newsControls" layout vertical center>
+          <paper-progress id="articleProgress"></paper-progress>
+          <div style="margin: 3px 3px 10px 3px;" layout horizontal center>
+            REPEAT?<paper-toggle-button id="ptbRepeat" checked="{{repeat}}"></paper-toggle-button>
+          </div>
+          <div id="controlsContainer" style="margin-top: 5px; margin-bottom: 5px;" layout horizontal center>
+            <paper-button label="{{ playStateLbl }}" id="btnPlay" on-tap="{{togglePlay}}" raisedButton></paper-button>
+            <paper-button label="Faster" id="btnFaster" on-tap="{{faster}}" raisedButton></paper-button>
+            <paper-button label="Slower" id="btnSlower" on-tap="{{slower}}" raisedButton></paper-button>
+          </div>
+        </div>
+      </core-card>
+    </template>
+  
+    <script>
+  
+      Polymer('x-news', {
+        playStateLbl: 'Play',
+        playState: false,
+        artTitle: 'Prez underage dog is pregnant',
+        author: 'wiggles mc wiggle',
+        word: 'better',
+        words: ['the', 'quick', 'brown', 'fox', 'jumped', 'over', 'the', 'lazy', 'dog'],
+        index: 0,
+        tmr : null,
+        ready: function ()  {
+          this.artTitle = 'Prez underage dog is pregnant';
+          this.author = 'wiggles mc wiggle';
+          this.word = '';
+          this.repeat = true;
+          this.words = ['the', 'quick', 'brown', 'fox', 'jumped', 'over', 'the', 'lazy', 'dog'];
+          this.speed = 250;
+          this.index = 0;
+          this.$.articleProgress.max = this.words.length;
+        },
+        attributeChanged: function (attr, oVal, nVal) {},
+        togglePlay: function() {
+          this.playState = !this.playState;
+          this.playStateLbl = this.playState ? "Pause" : "Play";
+          if(this.playState) {
+            this.cycleWords();
+          } else {
+            this.bind(clearInterval(this.tmr));
+          }
+        },
+        cycleWords : function() {
+          this.tmr = setTimeout((function() {
+              
+              this.word = this.words[this.index];
+              this.index++;
+              this.$.articleProgress.value = (this.index / this.words.length)*10;
+              var p = document.getElementById('articleProgress');
+              console.log("%d of %d\nProgress %d %d", this.index, this.words.length,this.$.articleProgress.value, this.$.articleProgress.max);
+              if(this.index === this.words.length) { 
+                this.index = 0;
+                if(!this.repeat) {
+                  this.playState = false;
+                  this.playStateLbl = "Play";
+                  this.word = '';
+                  this.bind(clearInterval(this.tmr));
+                }
+              }
+              if(this.playState) { this.cycleWords(); }
+            }).bind(this), this.speed);
+        },
+        nextWord: function(word, words, index) {
+          console.log('nextWord()...');
+          this.word = this.words[this.index];
+          this.index++;
+          if(this.index === this.words.length) this.index = 0;
+        },
+        //setInterval: function(nextWord(this.word, this.words, this.index), 1000),
+        faster: function() { 
+          this.speed -= 20; 
+          console.log('speed.. ' + this.speed); 
+          // reset the 
+          //this.resetTimer();
+        },
+        slower: function() { 
+          this.speed += 20; 
+          console.log('speed.. ' + this.speed); 
+          //this.resetTimer();
+          
+        },
+        resetTimer: function() {
+          if(this.playState) {
+            this.bind(clearInterval(this.tmr));
+            //this.cycleWords();
+            this.playState = false;
+            this.togglePlay();
+          }
+        }
+        
+      });
+  
+    </script>
+  
+  </polymer-element>
