@@ -79,7 +79,9 @@
           console.log("\n\n" + link + "\n\n");
           this.$.getWords.body =  link;
           //console.log(this.articles[this.index].link);
+          
           console.log(JSON.stringify(this.$.getWords.body, null, 2));
+          
           //this.$.getWords.body = '{"link" : "' +  this.articles[this.index].link + '" , "bar":2}'
           //this.$.getWords.url = /** build url monkey **/ this.articles[this.index].link;
           this.$.getWords.go();
@@ -88,7 +90,11 @@
         }
       },
       
-      wordsObtained: function() { console.log(this.$.getWords.response.slice(0)); },
+      wordsObtained: function() { 
+        console.log(this.$.getWords.response.slice(0));
+        var wrds = JSON.parse(this.$.getWords.response.slice(0));
+        this.$.news.words = wrds;
+      },
       
       wordsErrored: function() { console.log('errored out'); },
       
