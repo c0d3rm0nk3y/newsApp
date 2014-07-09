@@ -18,13 +18,28 @@
       * { margin: 5px;}
     </style>
     <!--Get news stories..-->
-    <core-ajax></core-ajax>
+    <core-ajax auto 
+               url="http://monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/news" 
+               handleas="json" 
+               response="{{articles}}"
+               on-core-response="{{handleResponse}}">
+    </core-ajax>
+    <core-ajax id="getWords"
+               handeas="json"
+               url="http://monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/news"
+               method="POST"
+               body=''
+               response="{{words}}"
+               on-core-response="{{wordsObtained}}"
+               on-core-error="{{wordsErrored}}"
+               on-core-complete="{{wordsComplete}}">
+    </core-ajax>
     <core-card layout horizontal center>
-      <paper-button label="<<"></paper-button>
+      <paper-button label="<<" on-tap="{{previous}}"></paper-button>
       <core-card>
-        <x-news title="Prez says school uncool" author="johnnie McBlue"></x-news>
+        <x-news id="news" title="Prez says school uncool" author="johnnie McBlue"></x-news>
       </core-card>
-      <paper-button label=">>"></paper-button>
+      <paper-button label=">>" on-tap="{{next}}"></paper-button>
       
     </core-card>
   </template>
@@ -32,6 +47,52 @@
   <script>
 
     Polymer('x-news-card', {
+      index: 0,
+      articles: [],
+
+      created: function() { console.log('created.. '); },
+      
+      ready: function() { console.log('ready fired..'); },
+      
+      handleResponse: function() { console.log('on articles received.. ' + this.articles.length + ' Received'); },
+      
+      previous: function() {
+        this.index--;
+        if(this.index <0) this.index = this.articles.length - 1;
+        console.log('previous(): ' + this.articles.length);
+        this.getContent();
+      },
+      
+      next: function() {
+        this.index++;
+        if(this.index === this.articles.length -1) this.index = 0;
+        console.log('next(): ' + this.index);
+        this.getContent();
+      },
+      
+      getContent: function() {
+        if(this.articles.length === 0) console.log('no articles..');
+        this.$.news.title = this.articles[this.index].title;
+        this.$.news.url = this.articles[this.index].url;
+        if(this.articles[this.index].words.length === 0) {
+          var link = this.articles[this.index].link;
+          console.log("\n\n" + link + "\n\n");
+          this.$.getWords.body =  link;
+          //console.log(this.articles[this.index].link);
+          console.log(JSON.stringify(this.$.getWords.body, null, 2));
+          //this.$.getWords.body = '{"link" : "' +  this.articles[this.index].link + '" , "bar":2}'
+          //this.$.getWords.url = /** build url monkey **/ this.articles[this.index].link;
+          this.$.getWords.go();
+        } else {
+          this.$.news.words = this.articles[this.index].words;
+        }
+      },
+      
+      wordsObtained: function() { console.log(this.$.getWords.response.slice(0)); },
+      
+      wordsErrored: function() { console.log('errored out'); },
+      
+      wordsComplete: function() { console.log('get words completed..'); }
       
     });
 
