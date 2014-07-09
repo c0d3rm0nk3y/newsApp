@@ -34,27 +34,35 @@
     <script>
   
       Polymer('x-news', {
-        playStateLbl: 'Play',
+        playStateLbl: '',
         playState: false,
-        artTitle: 'Prez underage dog is pregnant',
-        author: 'wiggles mc wiggle',
-        word: 'better',
-        words: ['the', 'quick', 'brown', 'fox', 'jumped', 'over', 'the', 'lazy', 'dog'],
-        index: 0,
+        artTitle: '',
+        author: '',
+        word: '',
+        words: [],
+        index: -1,
         speed : 250,
         tmr : null,
         
-        ready: function ()  {},
+        ready: function ()  {
+          console.log('x-news ready fired..');
+          
+        },
         
         attributeChanged: function (attr, oVal, nVal) {
           console.log('attributeChanged.. %s: old: %s, new: %s', attr, oVal, nVal);
           switch(attr) {
-            case 'title': this.artTitle = nVal;
+            case 'title': 
+              this.artTitle = nVal;
+              console.log('new title: ' + nVAl);
               break;
-            case 'author': this.author = nVal;
+            case 'author':
+              this.author = nVal;
+              console.log('new author: ' + nVal);
               break;
             case 'words': 
               this.words = nVal;
+              console.log('words assigned..');
               break;
           }
         },

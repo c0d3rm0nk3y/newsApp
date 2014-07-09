@@ -37,7 +37,7 @@
     <core-card layout horizontal center>
       <paper-button label="<<" on-tap="{{previous}}"></paper-button>
       <core-card>
-        <x-news id="news" title="Prez says school uncool" author="johnnie McBlue"></x-news>
+        <x-news id="news" title="Prez says school uncool" author="johnnie McBlue" words="['monkey', 'kitty', 'doggie']"></x-news>
       </core-card>
       <paper-button label=">>" on-tap="{{next}}"></paper-button>
       
@@ -49,10 +49,15 @@
     Polymer('x-news-card', {
       index: 0,
       articles: [],
+      words: [],
 
       created: function() { console.log('created.. '); },
       
-      ready: function() { console.log('ready fired..'); },
+      ready: function() { 
+        console.log('x-news-card ready fired..'); 
+        // this is where the you should try to push to news-card
+        
+      },
       
       handleResponse: function() { console.log('on articles received.. ' + this.articles.length + ' Received'); },
       
@@ -71,34 +76,44 @@
       },
       
       getContent: function() {
-        if(this.articles.length === 0) console.log('no articles..');
-        this.$.news.title = this.articles[this.index].title;
-        this.$.news.url = this.articles[this.index].url;
-        if(this.articles[this.index].words.length === 0) {
-          var link = this.articles[this.index].link;
-          console.log("\n\n" + link + "\n\n");
-          this.$.getWords.body =  link;
-          //console.log(this.articles[this.index].link);
+        if(this.articles.length === 0) { 
+          console.log('no articles..'); 
+          this.word = 'no articles';
           
-          console.log(JSON.stringify(this.$.getWords.body, null, 2));
-          
-          //this.$.getWords.body = '{"link" : "' +  this.articles[this.index].link + '" , "bar":2}'
-          //this.$.getWords.url = /** build url monkey **/ this.articles[this.index].link;
-          this.$.getWords.go();
         } else {
-          this.$.news.words = this.articles[this.index].words;
+          this.$.news.title = this.articles[this.index].title;
+          this.$.news.url = this.articles[this.index].url;
+          if(this.articles[this.index].words.length === 0) {
+            var link = this.articles[this.index].link;
+            console.log("\n\n" + link + "\n\n");
+            this.$.getWords.body =  link;
+            console.log(this.articles[this.index].link);
+            
+            console.log(JSON.stringify(this.$.getWords.body, null, 2));
+            
+            //this.$.getWords.body = '{"link" : "' +  this.articles[this.index].link + '" , "bar":2}'
+            //this.$.getWords.url = /** build url monkey **/ this.articles[this.index].link;
+            this.$.getWords.go();
+          } else {
+            this.$.news.words = this.articles[this.index].words;
+          }
         }
       },
       
       wordsObtained: function() { 
         //console.log(this.$.getWords.response.slice(0));
-        var wrds = JSON.parse(this.$.getWords.response.slice(0));
-        this.$.news.words = wrds;
+        this.words = JSON.parse(this.$.getWords.response.slice(0));
+        console.log(this.words);
+        console.log('\n\n' +  this.$.getWords.response.slice(0));
+        this.$.news.words = this.words;
       },
       
       wordsErrored: function() { console.log('errored out'); },
       
-      wordsComplete: function() { console.log('get words completed..'); }
+      wordsComplete: function() { 
+        console.log('get words completed, ' + this.words.length + ' found..'); 
+        
+      }
       
     });
 
